@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import connectDB from "./utils/db.js";
 import ShelterRoute from "./routes/shelter.route.js"
 import userRoute from "./routes/user.route.js"
+import postRoute from './routes/post.route.js';
+
 dotenv.config();
 
 const app = express();
@@ -45,7 +47,11 @@ app.use("/api/v1/shelter", ShelterRoute);
 // http://localhost:8000/api/v1/shelter//accept/:shelterId
 // http://localhost:8000/api/v1/shelter/feed
 
+app.use("/api/v1/post", postRoute);
 
+// http://localhost:8000/api/v1/post/posts
+// http://localhost:8000/api/v1/shelter//accept/:shelterId
+// http://localhost:8000/api/v1/shelter/feed
 
 // Start the server
 app.listen(port, () => {

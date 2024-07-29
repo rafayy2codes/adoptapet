@@ -93,6 +93,7 @@ export const getSuggestedShelters = async (req, res) => {
 };
 
 
+
 export const acceptShelterApplication = async (req, res) => {
     try {
         const { shelterId } = req.params; // Shelter ID to be approved
@@ -106,8 +107,16 @@ export const acceptShelterApplication = async (req, res) => {
             });
         }
 
+        // Check if the application status is already accepted
+        if (shelter.applicationStatus) {
+            return res.status(400).json({
+                message: "Application is already accepted",
+                success: false
+            });
+        }
+
         // Update the application status to accepted
-        shelter.applicationStatus = true; // Assuming you have an applicationStatus field
+        shelter.applicationStatus = true;
         await shelter.save(); // Save the updated shelter document
 
         return res.status(200).json({

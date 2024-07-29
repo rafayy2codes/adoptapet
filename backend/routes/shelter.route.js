@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 router.route("/registershelter").post(registerShelter);
-router.route("/accept/:shelterId").put(acceptShelterApplication);
+router.route("/accept/:shelterId").post(acceptShelterApplication);
 router.route("/feed").get(isAuthenticated, getSuggestedShelters);
 
 
