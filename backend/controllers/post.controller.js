@@ -44,3 +44,27 @@ export const createPost = async (req, res) => {
         });
     }
 };
+export const getNewsfeed = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query; // Default to page 1 and 10 posts per page
+
+        const posts = await Post.find()
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit) // Skip the number of posts based on the current page
+            .limit(Number(limit)) // Limit the number of posts returned
+            .populate('author', 'username')
+            .exec();
+
+        return res.status(200).json({
+            message: "Newsfeed retrieved successfully",
+            success: true,
+            posts
+        });
+    } catch (error) {
+        console.error("Error retrieving newsfeed:", error.message);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+};

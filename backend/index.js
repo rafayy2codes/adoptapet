@@ -36,22 +36,22 @@ app.use(cors(corsOptions));
 app.use("/api/v1/user", userRoute);
 
 
-// http://localhost:8000/api/v1/user/register
+// http://localhost:8000/api/v1/user/register \\works
 // http://localhost:8000/api/v1/user/update
-// http://localhost:8000/api/v1/user/login
+// http://localhost:8000/api/v1/user/login \\works
+// http://localhost:8000/api/v1/user/logout \\works
 
 
 app.use("/api/v1/shelter", ShelterRoute);
 
 // http://localhost:8000/api/v1/shelter/registershelter
-// http://localhost:8000/api/v1/shelter//accept/:shelterId
-// http://localhost:8000/api/v1/shelter/feed
-
+// http://localhost:8000/api/v1/shelter/loginshelter 
+// http://localhost:8000/api/v1/shelter/getshelter
 app.use("/api/v1/post", postRoute);
 
-// http://localhost:8000/api/v1/post/posts
-// http://localhost:8000/api/v1/shelter//accept/:shelterId
-// http://localhost:8000/api/v1/shelter/feed
+// http://localhost:8000/api/v1/post/posts // works
+// http://localhost:8000/api/v1/post/Newsfeed // works
+
 
 // Start the server
 app.listen(port, () => {

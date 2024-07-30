@@ -20,12 +20,14 @@ export const registerShelter = async (req, res) => {
         } = req.body;
 
         // Validate required fields
-        if (!name || !address || !capacity || !email || !website || !contactNumber || !password) {
+        if (!name || !capacity || !email || !website || !contactNumber || !password) {
             return res.status(400).json({
                 message: "Missing required fields",
                 success: false
             });
         }
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new Shelter document
@@ -47,13 +49,12 @@ export const registerShelter = async (req, res) => {
 
         // Respond with success message
         return res.status(201).json({
-            message: "Appliction to register shelter registered successfully",
+            message: "Shelter registered successfully",
             success: true,
             shelter: newShelter
         });
 
     } catch (error) {
-        // Log the error and respond with an error message
         console.error("Error registering shelter:", error.message);
         return res.status(500).json({
             message: "Internal server error",
@@ -61,10 +62,93 @@ export const registerShelter = async (req, res) => {
         });
     }
 };
+
+
+
+export const loginShelter = async (req, res) => {
+    try {
+        const { name, password } = req.body;
+
+        // Validate input data
+        if (!name || !password) {
+            return res.status(400).json({
+                message: "Invalid credentials",
+                success: false
+            });
+        }
+
+        // Find the shelter by name
+        const shelter = await Shelter.findOne({ name });
+        if (!shelter) {
+            return res.status(400).json({
+                message: "Incorrect name or password",
+                success: false
+            });
+        }
+
+        // Compare the provided password with the stored hashed password
+        const isPasswordMatch = await bcrypt.compare(password, shelter.password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({
+                message: "Incorrect name or password",
+                success: false
+            });
+        }
+
+        // Check application status
+        // if (!shelter.applicationStatus) {
+        // return res.status(403).json({
+        //   message: "Application not approved. Access denied.",
+        // success: false
+        //     });
+        // }
+
+        // Create token payload
+        const tokenData_Shelter = {
+            shelterId: shelter._id
+        };
+
+        // Generate the JWT token
+        const token_forShelter = jwt.sign(tokenData_Shelter, process.env.SECRET_KEY_for_shelter, { expiresIn: '1d' });
+
+        // Respond with the shelter details and token
+        return res.status(200)
+            .cookie("token", token_forShelter, {
+                maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
+                httpOnly: true, // Secure cookies (not accessible via JavaScript)
+                sameSite: "strict" // Helps prevent CSRF attacks
+            })
+            .json({
+                message: "Login successful",
+                success: true,
+                shelter: {
+                    _id: shelter._id,
+                    name: shelter.name,
+                    email: shelter.email,
+                    token_forShelter
+                }
+            });
+
+    } catch (error) {
+        console.error("Error logging in shelter:", error.message);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+};
+
+
+
+
+
+
+
+
 export const getSuggestedShelters = async (req, res) => {
     try {
         // Fetch shelters with applicationStatus set to true
-        const shelters = await Shelter.find({ applicationStatus: true })
+        const shelters = await Shelter.find({ applicationStatus: false })
             .limit(10) // Limit the number of suggestions, if needed
             .exec();
 
@@ -133,3 +217,4 @@ export const acceptShelterApplication = async (req, res) => {
         });
     }
 };
+
