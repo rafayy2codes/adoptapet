@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// Define the Shelter schema
 const shelterSchema = new mongoose.Schema({
     name: { type: String, required: true },
     address: {

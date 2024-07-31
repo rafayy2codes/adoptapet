@@ -9,7 +9,7 @@ const petSchema = new mongoose.Schema({
     description: { type: String },
     availableForAdoption: { type: Boolean, default: true },
     imageUrl: { type: String },
-    shelter: { type: Schema.Types.ObjectId, ref: 'Shelter' }, // Shelter where the pet is located
+    shelter: { type: mongoose.Schema.Types.ObjectId, ref: 'Shelter' }, // Shelter where the pet is located
     createdAt: { type: Date, default: Date.now },
 });
 

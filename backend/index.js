@@ -6,6 +6,7 @@ import connectDB from "./utils/db.js";
 import ShelterRoute from "./routes/shelter.route.js"
 import userRoute from "./routes/user.route.js"
 import postRoute from './routes/post.route.js';
+import petRoute from "./routes/pet.route.js"
 
 dotenv.config();
 
@@ -47,11 +48,16 @@ app.use("/api/v1/shelter", ShelterRoute);
 // http://localhost:8000/api/v1/shelter/registershelter
 // http://localhost:8000/api/v1/shelter/loginshelter 
 // http://localhost:8000/api/v1/shelter/getshelter
+// http://localhost:8000/api/v1/shelter/logoutshelter
 app.use("/api/v1/post", postRoute);
 
 // http://localhost:8000/api/v1/post/posts // works
 // http://localhost:8000/api/v1/post/Newsfeed // works
 
+app.use("/api/v1/pet", petRoute);
+// http://localhost:8000/api/v1/pet/createpet //
+// http://localhost:8000/api/v1/pet/getpet //
+// http://localhost:8000/api/v1/pet/getpetbyid //
 
 // Start the server
 app.listen(port, () => {

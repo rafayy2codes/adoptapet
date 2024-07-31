@@ -138,7 +138,16 @@ export const loginShelter = async (req, res) => {
     }
 };
 
+export const logoutshelter = async (req, res) => {
+    try {
+        return res.status(200).cookie("token_forshelter", "", { maxAge: 0 }).json({
+            message: "logged successfuly as a shelter",
+            success: true,
+        })
+    } catch (error) {
 
+    };
+}
 
 
 

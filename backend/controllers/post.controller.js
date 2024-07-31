@@ -1,4 +1,6 @@
-import { Post } from '../models/post.model.js'; // Import the Post model
+// Import necessary models
+import { Post } from '../models/post.model.js';
+import { User } from '../models/user.model.js';
 
 // Create a new post
 export const createPost = async (req, res) => {
@@ -14,22 +16,21 @@ export const createPost = async (req, res) => {
             });
         }
 
-        // Create a new Post document
+        // Create and save the post
         const newPost = new Post({
             content,
             imageUrl,
             author: authorId
         });
 
-        // Save the post to the database
-        await newPost.save();
+        const savedPost = await newPost.save();
 
         // Populate the author field
-        const postWithAuthor = await Post.findById(newPost._id)
-            .populate('author', 'username profilePicture') // Populate author with username and profilePicture
+        const postWithAuthor = await Post.findById(savedPost._id)
+            .populate('author', 'username') // Populate author with username
             .exec();
 
-        // Respond with success message and post data
+        // Respond with the post data
         return res.status(201).json({
             message: "Post created successfully",
             success: true,
@@ -44,24 +45,23 @@ export const createPost = async (req, res) => {
         });
     }
 };
+
+// Get all posts (newsfeed)
 export const getNewsfeed = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query; // Default to page 1 and 10 posts per page
-
         const posts = await Post.find()
-            .sort({ createdAt: -1 })
-            .skip((page - 1) * limit) // Skip the number of posts based on the current page
-            .limit(Number(limit)) // Limit the number of posts returned
-            .populate('author', 'username')
-            .exec();
+        /// .populate('author', 'username') // Populate author with username
+        //.sort({ createdAt: -1 }) // Sort by creation date
+        //.exec();
 
         return res.status(200).json({
-            message: "Newsfeed retrieved successfully",
+            message: "Posts retrieved successfully",
             success: true,
             posts
         });
+
     } catch (error) {
-        console.error("Error retrieving newsfeed:", error.message);
+        console.error("Error retrieving posts:", error.message);
         return res.status(500).json({
             message: "Internal server error",
             success: false
